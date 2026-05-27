@@ -43,18 +43,6 @@
         
         .contenedor.visible { display: block; }
         
-        .inventario-container {
-            max-width: 100%;
-            margin: 0 auto;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            display: none;
-            box-sizing: border-box;
-        }
-        
-        .inventario-container.visible { display: block; }
-        
         input, select {
             width: 100%;
             padding: 12px;
@@ -82,7 +70,7 @@
         .btn-accion {
             width: auto;
             padding: 8px 12px;
-            font-size: 14px;
+            font-size: 12px;
             margin: 2px;
             display: inline-block;
         }
@@ -137,14 +125,21 @@
         
         .info.visible { display: block; }
         
-        #buscador { margin-bottom: 15px; border: 2px solid #2c5e3b; }
+        #buscador { 
+            margin-bottom: 15px; 
+            border: 2px solid #2c5e3b;
+            max-width: 100%;
+        }
         
-        .tabla-responsive { overflow-x: auto; margin-top: 15px; }
+        .tabla-responsive { 
+            overflow-x: auto; 
+            margin-top: 15px; 
+        }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 500px;
+            min-width: 600px;
         }
         
         th, td {
@@ -162,7 +157,12 @@
         tr:nth-child(even) { background-color: #f9f9f9; }
         tr:hover { background-color: #f0f0f0; }
         
-        .img-producto { width: 60px; height: 60px; object-fit: cover; }
+        .img-producto { 
+            width: 60px; 
+            height: 60px; 
+            object-fit: cover;
+            border-radius: 5px;
+        }
         
         .header-inv {
             display: flex;
@@ -181,33 +181,24 @@
         
         .btn-salir:hover { background-color: #c9302c; }
         
-        #panel-agregar { margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 5px; }
+        #panel-agregar { 
+            margin-bottom: 20px; 
+            padding: 15px; 
+            background-color: #f9f9f9; 
+            border-radius: 5px; 
+        }
         
         h1, h2 { color: #2c5e3b; }
         
-        .tab-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+        .form-group { 
+            margin-bottom: 15px; 
+            text-align: left; 
         }
-        
-        .tab-btn {
-            padding: 10px 20px;
-            background-color: #ddd;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
+        .form-group label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: bold; 
         }
-        
-        .tab-btn.active {
-            background-color: #2c5e3b;
-            color: white;
-        }
-        
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
         
         .verification-section {
             background-color: #f0f8f0;
@@ -228,6 +219,16 @@
             font-weight: bold;
             margin: 10px 0;
             letter-spacing: 5px;
+        }
+
+        .stock-input {
+            width: 80px;
+            padding: 6px;
+            font-size: 14px;
+        }
+
+        #contenedor-tabla {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -315,45 +316,10 @@
             <button class="btn-salir" onclick="cerrarSesion()">🚪 Salir</button>
         </div>
         
-        <div id="panel-agregar">
-            <h3>Agregar Nuevo Producto</h3>
-            <div class="form-group">
-                <label for="inputNombre">Nombre del Producto</label>
-                <input type="text" id="inputNombre" placeholder="Ej: Fertilizante NPK">
-            </div>
-            <div class="form-group">
-                <label for="inputCantidad">Cantidad</label>
-                <input type="number" id="inputCantidad" placeholder="0" min="0">
-            </div>
-            <div class="form-group">
-                <label for="inputCategoria">Categoría</label>
-                <select id="inputCategoria">
-                    <option value="">Selecciona una categoría</option>
-                    <option value="Fertilizantes">Fertilizantes</option>
-                    <option value="Pesticidas">Pesticidas</option>
-                    <option value="Herramientas">Herramientas</option>
-                    <option value="Semillas">Semillas</option>
-                    <option value="Otros">Otros</option>
-                </select>
-            </div>
-            <button onclick="agregarProducto()">➕ Agregar Producto</button>
-        </div>
+        <input type="text" id="buscador" placeholder="🔍 Buscar productos...">
         
-        <div>
-            <input type="text" id="buscador" placeholder="🔍 Buscar productos...">
-            <div class="tabla-responsive">
-                <table id="tablaProductos">
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Categoría</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cuerpoTabla"></tbody>
-                </table>
-            </div>
+        <div class="tabla-responsive">
+            <div id="contenedor-tabla"></div>
         </div>
     </div>
 
@@ -362,17 +328,117 @@
         let usuarioActual = null;
         let codigoVerificacionGenerado = null;
         let registroEnProceso = null;
+        let inventarioDB = [];
+        
         const STORAGE_KEY = 'usuarios_agricovet';
         const SESSION_KEY = 'sesion_agricovet';
+        const INVENTARIO_KEY = 'inventario_agricovet_oficial';
+        
+        // Lista oficial de 164 productos
+        const listaOficial = [
+            "Legatus mixx 30 OD litro", "Leñador 16 EW galón", "Dimaxine 72 SL galon", "Terraquat 20 SL galón", 
+            "Terraquat 20 SL litro", "Anorak 60 EC litro", "Duplexone 20 SL litro", "Leñador 16 EW 1 litro", 
+            "Revolver 36 5 SL litro", "Kaindor plus 30 SC litro", "SEMENTHAL 30 4 SL Caneca", "Torban 30 4 SL Caneca", 
+            "Triatleta 30 EW litro", "Nicogol 4 OD LITRO", "Dimaxine 72 SL litro", "Semental 16,5 SL litro", 
+            "Cegar 15 SL litro", "Azotela Max 85", "PILOT 56G 48X3", "Podador 60 WG 10X10gr", 
+            "Lasonate 90 SP 100 gr", "Revolver 36 5 SL caneca", "Torban 30 4 SL litro", "Coriplus 10 gr", 
+            "Lombrifin 10 gr", "Oxiplus Vitaminado 10 gr", "Socofin BD 10gr", "Vita vet plus 10gr", 
+            "Chemiestress 10gr", "Tilosin plus 25 gr", "Oxiplus Vitaminado 25 gr", "Cori plus 100 gr", 
+            "Socofin BD 100 gr", "Vita vet Plus 100 gr", "Lombrifin 100 gr", "Oxiplus Vitaminado 100 gr", 
+            "Tilosin 10 ml", "Socofin drog 10 ml", "Tilosin 25 ml", "Socofin drog 25 ml", 
+            "Tilosin 100 ml", "Nexlabet LA 30.1-60kg", "Nexlabet LA 7.6-15kg", "Nexlabet LA 15-30kg", 
+            "Dexametasona 20 ml", "Curabichera 400 ml", "Vitel 100 gr", "Vitel 15 gr", 
+            "Multipack 26/52 150 gr", "Multipack 26 52 15 gr", "Trimsulfa plus 100 gr", "Trinsulfa Plus 15 gr", 
+            "Electrolitos y Vitaminas 100 gr", "Electrolitos y Vitaminas 20 gr", "Broximicina 100 gr", "Fulmisarn spray 60 ml", 
+            "Shampoo Pets 250ml", "Vermimax plus 100 Tabletas", "Jabón PET Gold Barra", "Simparica trio 20-40kg", 
+            "Simparica trio 10-20kg", "Simparica trio 5-10kg", "Broncowell 100 gr", "Oxyfarm con electrolitos 100 gr", 
+            "Caja oxyfarm 20 grs", "All Trompa 454 gr", "All Trompa 100 gr", "Oxyfarm inyectable 10 ml", 
+            "Oxyfarm inyectable 50ml", "Oxyfarm inyectable 100 ml", "Oxyfarm inyectable 250 ml", "Pujantex 250 ml", 
+            "Vita B12 con fósforo 250 ml", "Ferradox plus 100 ml", "Neocan 120ml", "Neocan 240ml", 
+            "Defender 10ml", "Defender 50 ml", "Defender 100 ml", "Ferradox plus 10 ml", 
+            "tigent 20 ml", "Tigent 100ml", "Proteizoo plus 20ml", "Proteizoo Plus 250ml", 
+            "Ganazoo DP 20ml", "Bioxil 7% 500ml", "Dipiron 500 30 ml", "Labimin 500 ml", 
+            "Iverplus La 10ml 1%", "Iverplus la 100 ml 1%", "Iverplus La 500ml 1%", "Iverplus 500 4%", 
+            "Farma-Tecnimicina 50ml", "Farma-tecnimicina 100ml", "Farma-tecnimicina LA 10ml", "Farma-tecnimicina LA 50ml", 
+            "Farma-tecnimicina LA 100ml", "Oxitetraciclina plus 250ml", "Oxitetraciclina plus 100 ml", "Oxitetraciclina plus 50ml", 
+            "Oxitetraciclina plus 10ml", "verrugan 20 ml", "verrugan plus 30 ml", "Oxitocina 10ml", 
+            "Ectogan Pipeta Spot on", "Ectogan pour On LITRO", "Borogluconato de calcio 250 ml", "Solumin 250ml", 
+            "Instavit 500ml", "Leche en polvo para Ternero", "Nuvan 1L", "Nuvan 100ml", 
+            "Rata Quilla Sb caja", "JB Matagusano", "Impacto spray 263 gr", "Jeringa 1 ml 100U", 
+            "Jeringa 3 ml 100U", "Jeringa 5 ml 100U", "Jeringa 10ml 100U", "Lannate 100 ml", 
+            "mirex 250 grs", "mirex 500 grs", "Broncobion maxx 30 ml", "Mielita Vip", 
+            "Anticion anticonceptivo", "Ccipermetrina 25 EC 100ml", "Ccipermetrina 25 EC 250", "Ccipermetrina 25 EC 500ml", 
+            "Ccipermetrina 25 EC 1LT", "CPF 2DP", "FOLIAR PLUS", "PIKUDO 20 SC"
+        ];
         
         // ==================== INICIALIZACIÓN ====================
         window.addEventListener('DOMContentLoaded', function() {
             cargarUsuarios();
             verificarSesion();
+            inicializarInventario();
             inicializarBuscador();
         });
         
-        // ==================== FUNCIONES DE AUTENTICACIÓN ====================
+        // ==================== INVENTARIO ====================
+        
+        function inicializarInventario() {
+            let datos = localStorage.getItem(INVENTARIO_KEY);
+            if (!datos) {
+                inventarioDB = listaOficial.map(nombre => ({
+                    nombre: nombre,
+                    stock: 0,
+                    foto: "imagenes/" + nombre.replace(/\s+/g, '_') + ".PNG"
+                }));
+                localStorage.setItem(INVENTARIO_KEY, JSON.stringify(inventarioDB));
+            } else {
+                inventarioDB = JSON.parse(datos);
+            }
+        }
+        
+        function renderizarTabla(filtro = "") {
+            let html = '<table><thead><tr><th>Imagen</th><th>Producto</th><th>Stock</th><th>Acciones</th></tr></thead><tbody>';
+            
+            inventarioDB.forEach((p, index) => {
+                if(p.nombre.toLowerCase().includes(filtro.toLowerCase())) {
+                    html += `<tr>
+                        <td><img src="${p.foto}" class="img-producto" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect fill=%22%23ddd%22 width=%2260%22 height=%2260%22/%3E%3Ctext x=%2230%22 y=%2230%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EN/A%3C/text%3E%3C/svg%3E'"></td>
+                        <td>${p.nombre}</td>
+                        <td><input type="number" class="stock-input" value="${p.stock}" onchange="actualizarStock(${index}, this.value)"></td>
+                        <td>
+                            <button class="btn-accion" onclick="guardarCambios()">💾 Guardar</button>
+                            <button class="btn-accion btn-quitar" onclick="resetearStock(${index})">🔄 Resetear</button>
+                        </td>
+                    </tr>`;
+                }
+            });
+            html += '</tbody></table>';
+            document.getElementById('contenedor-tabla').innerHTML = html;
+        }
+        
+        function actualizarStock(index, valor) {
+            inventarioDB[index].stock = parseInt(valor) || 0;
+        }
+        
+        function resetearStock(index) {
+            if (confirm('¿Resetear stock a 0?')) {
+                inventarioDB[index].stock = 0;
+                renderizarTabla(document.getElementById('buscador').value);
+                guardarCambios();
+            }
+        }
+        
+        function guardarCambios() {
+            localStorage.setItem(INVENTARIO_KEY, JSON.stringify(inventarioDB));
+            alert('✅ Cambios guardados exitosamente');
+        }
+        
+        function inicializarBuscador() {
+            document.getElementById('buscador').addEventListener('keyup', function(e) {
+                renderizarTabla(e.target.value);
+            });
+        }
+        
+        // ==================== AUTENTICACIÓN ====================
         
         function mostrarRegistro() {
             document.getElementById('registerForm').style.display = 'block';
@@ -394,12 +460,10 @@
             const regSuccess = document.getElementById('regSuccess');
             const regInfo = document.getElementById('regInfo');
             
-            // Limpiar mensajes
             regError.classList.remove('visible');
             regSuccess.classList.remove('visible');
             regInfo.classList.remove('visible');
             
-            // Validaciones
             if (!email || !password || !password2) {
                 mostrarError(regError, 'Por favor completa todos los campos');
                 return;
@@ -420,14 +484,12 @@
                 return;
             }
             
-            // Verificar si el usuario ya existe
             const usuarios = cargarUsuarios();
             if (usuarios.some(u => u.email === email)) {
                 mostrarError(regError, 'Este correo ya está registrado');
                 return;
             }
             
-            // Generar código de verificación
             codigoVerificacionGenerado = generarCodigoVerificacion();
             registroEnProceso = {
                 email: email,
@@ -435,15 +497,12 @@
                 codigoVerificacion: codigoVerificacionGenerado
             };
             
-            // Mostrar sección de verificación
             document.getElementById('verificationSection').classList.add('visible');
             document.getElementById('generatedCode').textContent = codigoVerificacionGenerado;
             document.getElementById('generatedCode').style.display = 'block';
             
-            // Mostrar mensaje
             mostrarInfo(regInfo, `✅ Código generado: ${codigoVerificacionGenerado} (También se envió a tu correo)`);
             
-            // Enviar correo con Formspree
             enviarCorreoVerificacion(email, codigoVerificacionGenerado);
         }
         
@@ -465,7 +524,6 @@
                 return;
             }
             
-            // Código correcto - guardar usuario
             const usuarios = cargarUsuarios();
             usuarios.push({
                 email: registroEnProceso.email,
@@ -476,7 +534,6 @@
             
             guardarUsuarios(usuarios);
             
-            // Limpiar
             mostrarSuccess(verSuccess, '✅ ¡Cuenta creada exitosamente! Iniciando sesión...');
             
             setTimeout(() => {
@@ -499,7 +556,6 @@
         }
         
         function enviarCorreoVerificacion(email, codigo) {
-            // Usar Formspree para enviar el correo
             const formData = new FormData();
             formData.append('email', email);
             formData.append('codigo', codigo);
@@ -555,7 +611,6 @@
                 return;
             }
             
-            // Iniciar sesión
             iniciarSesionDirecta(email);
         }
         
@@ -563,11 +618,10 @@
             usuarioActual = email;
             sessionStorage.setItem(SESSION_KEY, email);
             
-            // Mostrar inventario
             document.getElementById('authContainer').classList.add('hidden');
             document.getElementById('inventarioContainer').classList.add('visible');
             
-            cargarProductos();
+            renderizarTabla();
         }
         
         function cerrarSesion() {
@@ -590,131 +644,11 @@
                 usuarioActual = emailGuardado;
                 document.getElementById('authContainer').classList.add('hidden');
                 document.getElementById('inventarioContainer').classList.add('visible');
-                cargarProductos();
+                renderizarTabla();
             }
         }
         
-        // ==================== FUNCIONES DE INVENTARIO ====================
-        
-        function agregarProducto() {
-            const nombre = document.getElementById('inputNombre').value.trim();
-            const cantidad = parseInt(document.getElementById('inputCantidad').value) || 0;
-            const categoria = document.getElementById('inputCategoria').value;
-            
-            if (!nombre || !categoria) {
-                alert('Por favor completa todos los campos');
-                return;
-            }
-            
-            const productos = cargarProductos();
-            const id = Date.now();
-            
-            productos.push({
-                id: id,
-                nombre: nombre,
-                cantidad: cantidad,
-                categoria: categoria,
-                usuario: usuarioActual,
-                fechaCreacion: new Date().toISOString()
-            });
-            
-            guardarProductos(productos);
-            mostrarProductos(productos);
-            
-            // Limpiar formulario
-            document.getElementById('inputNombre').value = '';
-            document.getElementById('inputCantidad').value = '';
-            document.getElementById('inputCategoria').value = '';
-        }
-        
-        function editarProducto(id) {
-            const productos = cargarProductos();
-            const producto = productos.find(p => p.id === id);
-            
-            if (!producto) return;
-            
-            const nuevaCantidad = prompt('Nueva cantidad:', producto.cantidad);
-            if (nuevaCantidad !== null && !isNaN(nuevaCantidad)) {
-                producto.cantidad = parseInt(nuevaCantidad);
-                guardarProductos(productos);
-                mostrarProductos(productos);
-            }
-        }
-        
-        function eliminarProducto(id) {
-            if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
-                let productos = cargarProductos();
-                productos = productos.filter(p => p.id !== id);
-                guardarProductos(productos);
-                mostrarProductos(productos);
-            }
-        }
-        
-        function mostrarProductos(productos = null) {
-            if (!productos) {
-                productos = cargarProductos();
-            }
-            
-            const cuerpoTabla = document.getElementById('cuerpoTabla');
-            cuerpoTabla.innerHTML = '';
-            
-            // Filtrar por usuario actual
-            const productosUsuario = productos.filter(p => p.usuario === usuarioActual);
-            
-            if (productosUsuario.length === 0) {
-                cuerpoTabla.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">No hay productos. ¡Agrega uno!</td></tr>';
-                return;
-            }
-            
-            productosUsuario.forEach(producto => {
-                const fila = document.createElement('tr');
-                fila.innerHTML = `
-                    <td>${producto.nombre}</td>
-                    <td>${producto.cantidad} unidades</td>
-                    <td>${producto.categoria}</td>
-                    <td>
-                        <button class="btn-accion" onclick="editarProducto(${producto.id})">✏️ Editar</button>
-                        <button class="btn-accion btn-quitar" onclick="eliminarProducto(${producto.id})">🗑️ Eliminar</button>
-                    </td>
-                `;
-                cuerpoTabla.appendChild(fila);
-            });
-        }
-        
-        function inicializarBuscador() {
-            document.getElementById('buscador').addEventListener('keyup', function(e) {
-                const terminoBusqueda = e.target.value.toLowerCase();
-                const productos = cargarProductos();
-                const productosFilutrados = productos.filter(p => 
-                    (p.usuario === usuarioActual) &&
-                    (p.nombre.toLowerCase().includes(terminoBusqueda) || 
-                     p.categoria.toLowerCase().includes(terminoBusqueda))
-                );
-                mostrarProductos(productosFilutrados);
-            });
-        }
-        
-        function cargarProductos() {
-            const datos = localStorage.getItem('productos_agricovet');
-            return datos ? JSON.parse(datos) : [];
-        }
-        
-        function guardarProductos(productos) {
-            localStorage.setItem('productos_agricovet', JSON.stringify(productos));
-        }
-        
-        // ==================== FUNCIONES DE ALMACENAMIENTO ====================
-        
-        function cargarUsuarios() {
-            const datos = localStorage.getItem(STORAGE_KEY);
-            return datos ? JSON.parse(datos) : [];
-        }
-        
-        function guardarUsuarios(usuarios) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(usuarios));
-        }
-        
-        // ==================== FUNCIONES UTILITARIAS ====================
+        // ==================== UTILIDADES ====================
         
         function validarEmail(email) {
             const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -726,7 +660,6 @@
         }
         
         function encriptarPassword(password) {
-            // Encriptación simple (en producción usar bcrypt)
             return btoa(password);
         }
         
@@ -764,6 +697,17 @@
             document.getElementById('verificationCode').value = '';
             document.getElementById('verificationSection').classList.remove('visible');
             document.getElementById('generatedCode').style.display = 'none';
+        }
+        
+        // ==================== ALMACENAMIENTO ====================
+        
+        function cargarUsuarios() {
+            const datos = localStorage.getItem(STORAGE_KEY);
+            return datos ? JSON.parse(datos) : [];
+        }
+        
+        function guardarUsuarios(usuarios) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(usuarios));
         }
     </script>
 </body>
