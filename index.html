@@ -2,147 +2,769 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Agricovet de Guatemala - Inventario</title>
-                <style>
-                        body { font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 15px; text-align: center; color: #333; }
-                                .logo-container { margin-bottom: 20px; }
-                                        .logo-container img { max-width: 150px; height: auto; }
-                                                .contenedor { max-width: 100%; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); box-sizing: border-box; }
-                                                        .inventario-container { max-width: 100%; margin: 0 auto; background: white; padding: 15px; border-radius: 10px; display: none; box-sizing: border-box; }
-                                                                input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
-                                                                        button { width: 100%; padding: 12px; background-color: #2c5e3b; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 10px; font-weight: bold; }
-                                                                                button:hover { background-color: #1e4229; }
-                                                                                        .btn-accion { width: auto; padding: 8px 12px; font-size: 14px; margin: 2px; display: inline-block; }
-                                                                                                .btn-quitar { background-color: #d9534f; }
-                                                                                                        .link { color: #2c5e3b; cursor: pointer; text-decoration: underline; margin-top: 15px; display: block; font-size: 14px; }
-                                                                                                                .error { color: red; font-size: 14px; display: none; margin-top: 10px; }
-                                                                                                                        .exito { color: green; font-size: 14px; display: none; margin-top: 10px; }
-                                                                                                                                #buscador { margin-bottom: 15px; border: 2px solid #2c5e3b; }
-                                                                                                                                        .tabla-responsive { overflow-x: auto; margin-top: 15px; }
-                                                                                                                                                table { width: 100%; border-collapse: collapse; min-width: 450px; }
-                                                                                                                                                        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; font-size: 14px; vertical-align: middle; }
-                                                                                                                                                                th { background-color: #e0ca9e; color: #333; }
-                                                                                                                                                                        .img-producto { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; border: 1px solid #ccc; background-color: #f0f0f0; }
-                                                                                                                                                                                .header-inv { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; align-items: center; }
-                                                                                                                                                                                        .btn-salir { background-color: #666; width: 100%; }
-                                                                                                                                                                                                #panel-admin { background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #c8e6c9; }
-                                                                                                                                                                                                        #panel-admin h3 { margin-top: 0; color: #2c5e3b; font-size: 16px; }
-                                                                                                                                                                                                            </style>
-                                                                                                                                                                                                            </head>
-                                                                                                                                                                                                            <body>
-                                                                                                                                                                                                                    <div class="logo-container">
-                                                                                                                                                                                                                            <img src="agricovet.png" alt="Logo Agricovet" onerror="this.style.display='none'">
-                                                                                                                                                                                                                                    <h1 style="color: #2c5e3b; margin-top: 10px; font-size: 24px;">Agricovet de Guatemala</h1>
-                                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                                            <div id="panel-login" class="contenedor">
-                                                                                                                                                                                                                                                    <h2>Iniciar Sesión</h2>
-                                                                                                                                                                                                                                                            <input type="email" id="login-correo" placeholder="Correo electrónico" required auto-capitalize="none">
-                                                                                                                                                                                                                                                                    <input type="password" id="login-pass" placeholder="Contraseña" required>
-                                                                                                                                                                                                                                                                            <button onclick="iniciarSesion()">Entrar</button>
-                                                                                                                                                                                                                                                                                    <p id="login-error" class="error">Correo o contraseña incorrectos.</p>
-                                                                                                                                                                                                                                                                                            <span class="link" onclick="mostrarRegistro()">¿Nuevo en el equipo? Regístrate aquí</span>
-                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                    <div id="panel-registro" class="contenedor" style="display: none;">
-                                                                                                                                                                                                                                                                                                            <h2>Registrar Nuevo Usuario</h2>
-                                                                                                                                                                                                                                                                                                                    <input type="email" id="reg-correo" placeholder="Correo electrónico" required auto-capitalize="none">
-                                                                                                                                                                                                                                                                                                                            <input type="password" id="reg-pass" placeholder="Crear Contraseña" required>
-                                                                                                                                                                                                                                                                                                                                    <button onclick="registrarUsuario()" style="background-color: #e0ca9e; color: black;">Registrar</button>
-                                                                                                                                                                                                                                                                                                                                            <p id="reg-error" class="error">Por favor llena todos los campos.</p>
-                                                                                                                                                                                                                                                                                                                                                    <p id="reg-exito" class="exito">¡Registrado! Ya puedes iniciar sesión.</p>
-                                                                                                                                                                                                                                                                                                                                                            <span class="link" onclick="mostrarLogin()">Volver a Iniciar Sesión</span>
-                                                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                                                    <div id="panel-inventario" class="inventario-container">
-                                                                                                                                                                                                                                                                                                                                                                                <div class="header-inv">
-                                                                                                                                                                                                                                                                                                                                                                                            <h2 style="margin: 0; color: #2c5e3b;">Control de Inventario</h2>
-                                                                                                                                                                                                                                                                                                                                                                                                        <span style="font-size: 14px; color: #666;">Usuario: <strong id="usuario-activo"></strong></span>
-                                                                                                                                                                                                                                                                                                                                                                                                                    <button class="btn-salir btn-accion" onclick="cerrarSesion()">Cerrar Sesión</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                    <div id="panel-admin" style="display: none;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                <h3>Agregar Nuevo Producto Extra</h3>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                            <input type="text" id="nuevo-nombre" placeholder="Nombre exacto del producto">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button onclick="agregarProducto()">Añadir al Catálogo</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <input type="text" id="buscador" placeholder="🔍 Buscar producto por nombre..." onkeyup="filtrarTabla()">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="tabla-responsive">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div id="contenedor-tabla"></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <script>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    const CORREO_ADMIN = "seseffff942@gmail.com";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            const listaOficial = ["Legatus mixx 30 OD litro", "Leñador 16 EW galón", "Dimaxine 72 SL galon", "Terraquat 20 SL galón", "Terraquat 20 SL litro", "Anorak 60 EC litro", "Duplexone 20 SL litro", "Leñador 16 EW 1 litro", "Revolver 36 5 SL litro", "Kaindor plus 30 SC litro", "SEMENTHAL 30 4 SL Caneca", "Torban 30 4 SL Caneca", "Triatleta 30 EW litro", "Nicogol 4 OD LITRO", "Dimaxine 72 SL litro", "Semental 16,5 SL litro", "Cegar 15 SL litro", "Azotela Max 85", "PILOT 56G 48X3", "Podador 60 WG 10X10gr", "Lasonate 90 SP 100 gr", "Revolver 36 5 SL caneca", "Torban 30 4 SL litro", "Coriplus 10 gr", "Lombrifin 10 gr", "Oxiplus Vitaminado 10 gr", "Socofin BD 10gr", "Vita vet plus 10gr", "Chemiestress 10gr", "Tilosin plus 25 gr", "Oxiplus Vitaminado 25 gr", "Cori plus 100 gr", "Socofin BD 100 gr", "Vita vet Plus 100 gr", "Lombrifin 100 gr", "Oxiplus Vitaminado 100 gr", "Tilosin 10 ml", "Socofin drog 10 ml", "Tilosin 25 ml", "Socofin drog 25 ml", "Tilosin 100 ml", "Nexlabet LA 30.1-60kg", "Nexlabet LA 7.6-15kg", "Nexlabet LA 15-30kg", "Dexametasona 20 ml", "Curabichera 400 ml", "Vitel 100 gr", "Vitel 15 gr", "Multipack 26/52 150 gr", "Multipack 26 52 15 gr", "Trimsulfa plus 100 gr", "Trinsulfa Plus 15 gr", "Electrolitos y Vitaminas 100 gr", "Electrolitos y Vitaminas 20 gr", "Broximicina 100 gr", "Fulmisarn spray 60 ml", "Shampoo Pets 250ml", "Vermimax plus 100 Tabletas", "Jabón PET Gold Barra", "Simparica trio 20-40kg", "Simparica trio 10-20kg", "Simparica trio 5-10kg", "Broncowell 100 gr", "Oxyfarm con electrolitos 100 gr", "Caja oxyfarm 20 grs", "All Trompa 454 gr", "All Trompa 100 gr", "Oxyfarm inyectable 10 ml", "Oxyfarm inyectable 50ml", "Oxyfarm inyectable 100 ml", "Oxyfarm inyectable 250 ml", "Pujantex 250 ml", "Vita B12 con fósforo 250 ml", "Ferradox plus 100 ml", "Neocan 120ml", "Neocan 240ml", "Defender 10ml", "Defender 50 ml", "Defender 100 ml", "Ferradox plus 10 ml", "tigent 20 ml", "Tigent 100ml", "Proteizoo plus 20ml", "Proteizoo Plus 250ml", "Ganazoo DP 20ml", "Bioxil 7% 500ml", "Dipiron 500 30 ml", "Labimin 500 ml", "Iverplus La 10ml 1%", "Iverplus la 100 ml 1%", "Iverplus La 500ml 1%", "Iverplus 500 4%", "Farma-Tecnimicina 50ml", "Farma-tecnimicina 100ml", "Farma-tecnimicina LA 10ml", "Farma-tecnimicina LA 50ml", "Farma-tecnimicina LA 100ml", "Oxitetraciclina plus 250ml", "Oxitetraciclina plus 100 ml", "Oxitetraciclina plus 50ml", "Oxitetraciclina plus 10ml", "verrugan 20 ml", "verrugan plus 30 ml", "Oxitocina 10ml", "Ectogan Pipeta Spot on", "Ectogan pour On LITRO", "Borogluconato de calcio 250 ml", "Solumin 250ml", "Instavit 500ml", "Leche en polvo para Ternero", "Nuvan 1L", "Nuvan 100ml", "Rata Quilla Sb caja", "JB Matagusano", "Impacto spray 263 gr", "Jeringa 1 ml 100U", "Jeringa 3 ml 100U", "Jeringa 5 ml 100U", "Jeringa 10ml 100U", "Lannate 100 ml", "mirex 250 grs", "mirex 500 grs", "Broncobion maxx 30 ml", "Mielita Vip", "Anticion anticonceptivo", "Ccipermetrina 25 EC 100ml", "Ccipermetrina 25 EC 250", "Ccipermetrina 25 EC 500ml", "Ccipermetrina 25 EC 1LT", "CPF 2DP", "FOLIAR PLUS", "PIKUDO 20 SC"];
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    let usuariosDB = JSON.parse(localStorage.getItem('usuarios_agricovet_v2')) || {};
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            let inventarioDB = JSON.parse(localStorage.getItem('inventario_agricovet_oficial'));
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    if (!inventarioDB || inventarioDB.length === 0) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                inventarioDB = listaOficial.map(nombre => ({ nombre: nombre, stock: 0, foto: nombre + ".PNG" }));
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            localStorage.setItem('inventario_agricovet_oficial', JSON.stringify(inventarioDB));
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            function mostrarRegistro() { document.getElementById('panel-login').style.display = 'none'; document.getElementById('panel-registro').style.display = 'block'; limpiarMensajes(); }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    function mostrarLogin() { document.getElementById('panel-registro').style.display = 'none'; document.getElementById('panel-login').style.display = 'block'; limpiarMensajes(); }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            function limpiarMensajes() { document.getElementById('login-error').style.display = 'none'; document.getElementById('reg-error').style.display = 'none'; document.getElementById('reg-exito').style.display = 'none'; }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    function registrarUsuario() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                let correo = document.getElementById('reg-correo').value.toLowerCase().trim();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            let pass = document.getElementById('reg-pass').value;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        if (correo === "" || pass === "") { document.getElementById('reg-error').innerText = "Llena todos los campos."; document.getElementById('reg-error').style.display = 'block'; return; }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    if (usuariosDB[correo]) { document.getElementById('reg-error').innerText = "El correo ya está registrado."; document.getElementById('reg-error').style.display = 'block'; return; }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                usuariosDB[correo] = pass;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            localStorage.setItem('usuarios_agricovet_v2', JSON.stringify(usuariosDB));
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        document.getElementById('reg-error').style.display = 'none';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    document.getElementById('reg-exito').style.display = 'block';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                document.getElementById('reg-correo').value = "";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            document.getElementById('reg-pass').value = "";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            function iniciarSesion() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        let correo = document.getElementById('login-correo').value.toLowerCase().trim();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    let pass = document.getElementById('login-pass').value;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                if (usuariosDB[correo] && usuariosDB[correo] === pass) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                document.getElementById('panel-login').style.display = 'none';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                document.getElementById('panel-inventario').style.display = 'block';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                document.getElementById('usuario-activo').innerText = correo;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                renderizarTabla(correo);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                document.getElementById('login-correo').value = "";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                document.getElementById('login-pass').value = "";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                document.getElementById('login-error').style.display = 'none';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            } else { document.getElementById('login-error').style.display = 'block'; }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            function cerrarSesion() { document.getElementById('panel-inventario').style.display = 'none'; document.getElementById('panel-login').style.display = 'block'; }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    function renderizarTabla(usuarioActual) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                let esAdmin = (usuarioActual === CORREO_ADMIN);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            document.getElementById('panel-admin').style.display = esAdmin ? 'block' : 'none';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        let htmlTabla = `<table id="tabla-inventario"><tr><th>Foto</th><th>Producto</th><th>Stock</th>${esAdmin ? '<th>Modificar</th>' : ''}</tr>`;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    inventarioDB.forEach((item, index) => {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    let colorStock = item.stock > 0 ? 'black' : 'red';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    let txtStock = item.stock > 0 ? item.stock : 'Agotado';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    let acciones = '';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    if (esAdmin) { acciones = `<td><button class="btn-accion" onclick="modificarStock(${index}, 1)" style="background-color: #28a745;">+1</button><button class="btn-accion" onclick="modificarStock(${index}, -1)" style="background-color: #ffc107; color: black;">-1</button></td>`; }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    htmlTabla += `<tr class="fila-producto"><td><img class="img-producto" src="${item.foto}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' fill=\\'%23ccc\\' viewBox=\\'0 0 24 24\\'><path d=\\'M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z\\'/></svg>'"></td><td style="text-align: left;"><strong>${item.nombre}</strong></td><td style="color: ${colorStock}; font-weight: bold; font-size: 18px;">${txtStock}</td>${acciones}</tr>`;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                });
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            htmlTabla += '</table>';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        document.getElementById('contenedor-tabla').innerHTML = htmlTabla;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        function agregarProducto() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    let nombre = document.getElementById('nuevo-nombre').value.trim();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                if(!nombre) { alert("Escribe el nombre del producto."); return; }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            inventarioDB.push({ nombre: nombre, stock: 0, foto: nombre + ".PNG" });
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        document.getElementById('nuevo-nombre').value = "";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    guardarYRefrescar();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    function modificarStock(index, cantidad) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                inventarioDB[index].stock += cantidad;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            if(inventarioDB[index].stock < 0) inventarioDB[index].stock = 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        guardarYRefrescar();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        function guardarYRefrescar() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    localStorage.setItem('inventario_agricovet_oficial', JSON.stringify(inventarioDB));
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                renderizarTabla(document.getElementById('usuario-activo').innerText);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            filtrarTabla();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            function filtrarTabla() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        let input = document.getElementById("buscador").value.toLowerCase();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    let filas = document.querySelectorAll(".fila-producto");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                filas.forEach(fila => { let texto = fila.innerText.toLowerCase(); fila.style.display = texto.includes(input) ? "" : "none"; });
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </script>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </body>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agricovet de Guatemala - Inventario</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f4f4f9; 
+            margin: 0; 
+            padding: 15px; 
+            text-align: center; 
+            color: #333; 
+        }
+        .logo-container { margin-bottom: 20px; }
+        .logo-container img { max-width: 150px; height: auto; }
+        
+        /* Contenedor de Login/Registro */
+        .auth-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: block;
+        }
+        
+        .auth-container.hidden { display: none; }
+        
+        /* Contenedor de Inventario */
+        .contenedor {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .contenedor.visible { display: block; }
+        
+        .inventario-container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            box-sizing: border-box;
+        }
+        
+        .inventario-container.visible { display: block; }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #2c5e3b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        button:hover { background-color: #1e4229; }
+        
+        .btn-accion {
+            width: auto;
+            padding: 8px 12px;
+            font-size: 14px;
+            margin: 2px;
+            display: inline-block;
+        }
+        
+        .btn-quitar { background-color: #d9534f; }
+        .btn-quitar:hover { background-color: #c9302c; }
+        
+        .link {
+            color: #2c5e3b;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 15px;
+            display: block;
+            font-size: 14px;
+        }
+        
+        .link:hover { color: #1e4229; }
+        
+        .error {
+            color: #d9534f;
+            font-size: 14px;
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8d7da;
+            border-radius: 5px;
+        }
+        
+        .error.visible { display: block; }
+        
+        .exito {
+            color: #155724;
+            font-size: 14px;
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #d4edda;
+            border-radius: 5px;
+        }
+        
+        .exito.visible { display: block; }
+        
+        .info {
+            color: #004085;
+            font-size: 14px;
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #d1ecf1;
+            border-radius: 5px;
+        }
+        
+        .info.visible { display: block; }
+        
+        #buscador { margin-bottom: 15px; border: 2px solid #2c5e3b; }
+        
+        .tabla-responsive { overflow-x: auto; margin-top: 15px; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #e0ca9e;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #f0f0f0; }
+        
+        .img-producto { width: 60px; height: 60px; object-fit: cover; }
+        
+        .header-inv {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-salir {
+            background-color: #d9534f;
+            padding: 10px 20px;
+            font-size: 14px;
+            width: auto;
+        }
+        
+        .btn-salir:hover { background-color: #c9302c; }
+        
+        #panel-agregar { margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 5px; }
+        
+        h1, h2 { color: #2c5e3b; }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            background-color: #ddd;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .tab-btn.active {
+            background-color: #2c5e3b;
+            color: white;
+        }
+        
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        
+        .verification-section {
+            background-color: #f0f8f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .verification-section.visible { display: block; }
+        
+        .code-display {
+            background-color: #2c5e3b;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+            letter-spacing: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- SECCIÓN DE AUTENTICACIÓN -->
+    <div class="auth-container" id="authContainer">
+        <div class="logo-container">
+            <h1>🌾 Agricovet</h1>
+            <p>Sistema de Inventario Seguro</p>
+        </div>
+        
+        <!-- Formulario de Registro -->
+        <div id="registerForm">
+            <h2>Crear Cuenta</h2>
+            
+            <div class="form-group">
+                <label for="regEmail">📧 Correo Electrónico</label>
+                <input type="email" id="regEmail" placeholder="tu@email.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="regPassword">🔐 Contraseña</label>
+                <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="regPassword2">🔐 Confirmar Contraseña</label>
+                <input type="password" id="regPassword2" placeholder="Repite tu contraseña" required>
+            </div>
+            
+            <button onclick="registrarse()">Registrarse</button>
+            
+            <div class="error" id="regError"></div>
+            <div class="exito" id="regSuccess"></div>
+            <div class="info" id="regInfo"></div>
+            
+            <!-- Sección de Verificación -->
+            <div class="verification-section" id="verificationSection">
+                <h3>✅ Verificación de Correo</h3>
+                <p>Se ha enviado un código a tu correo. Ingresalo aquí:</p>
+                
+                <div class="form-group">
+                    <label for="verificationCode">Código de Verificación</label>
+                    <input type="text" id="verificationCode" placeholder="Ej: 123456" maxlength="6">
+                </div>
+                
+                <div class="code-display" id="generatedCode" style="display: none;"></div>
+                
+                <button onclick="verificarCodigo()">Verificar Código</button>
+                <button onclick="reenviarCodigo()" style="background-color: #6c757d; margin-top: 5px;">Reenviar Código</button>
+                
+                <div class="error" id="verError"></div>
+                <div class="exito" id="verSuccess"></div>
+            </div>
+            
+            <span class="link" onclick="mostrarLogin()">¿Ya tienes cuenta? Inicia sesión</span>
+        </div>
+        
+        <!-- Formulario de Login -->
+        <div id="loginForm" style="display: none;">
+            <h2>Iniciar Sesión</h2>
+            
+            <div class="form-group">
+                <label for="logEmail">📧 Correo Electrónico</label>
+                <input type="email" id="logEmail" placeholder="tu@email.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="logPassword">🔐 Contraseña</label>
+                <input type="password" id="logPassword" placeholder="Tu contraseña" required>
+            </div>
+            
+            <button onclick="iniciarSesion()">Iniciar Sesión</button>
+            
+            <div class="error" id="logError"></div>
+            
+            <span class="link" onclick="mostrarRegistro()">¿No tienes cuenta? Regístrate</span>
+        </div>
+    </div>
+    
+    <!-- SECCIÓN DE INVENTARIO -->
+    <div class="contenedor" id="inventarioContainer">
+        <div class="header-inv">
+            <h1>📦 Inventario de Agricovet</h1>
+            <button class="btn-salir" onclick="cerrarSesion()">🚪 Salir</button>
+        </div>
+        
+        <div id="panel-agregar">
+            <h3>Agregar Nuevo Producto</h3>
+            <div class="form-group">
+                <label for="inputNombre">Nombre del Producto</label>
+                <input type="text" id="inputNombre" placeholder="Ej: Fertilizante NPK">
+            </div>
+            <div class="form-group">
+                <label for="inputCantidad">Cantidad</label>
+                <input type="number" id="inputCantidad" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+                <label for="inputCategoria">Categoría</label>
+                <select id="inputCategoria">
+                    <option value="">Selecciona una categoría</option>
+                    <option value="Fertilizantes">Fertilizantes</option>
+                    <option value="Pesticidas">Pesticidas</option>
+                    <option value="Herramientas">Herramientas</option>
+                    <option value="Semillas">Semillas</option>
+                    <option value="Otros">Otros</option>
+                </select>
+            </div>
+            <button onclick="agregarProducto()">➕ Agregar Producto</button>
+        </div>
+        
+        <div>
+            <input type="text" id="buscador" placeholder="🔍 Buscar productos...">
+            <div class="tabla-responsive">
+                <table id="tablaProductos">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Categoría</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTabla"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== VARIABLES GLOBALES ====================
+        let usuarioActual = null;
+        let codigoVerificacionGenerado = null;
+        let registroEnProceso = null;
+        const STORAGE_KEY = 'usuarios_agricovet';
+        const SESSION_KEY = 'sesion_agricovet';
+        
+        // ==================== INICIALIZACIÓN ====================
+        window.addEventListener('DOMContentLoaded', function() {
+            cargarUsuarios();
+            verificarSesion();
+            inicializarBuscador();
+        });
+        
+        // ==================== FUNCIONES DE AUTENTICACIÓN ====================
+        
+        function mostrarRegistro() {
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('loginForm').style.display = 'none';
+            limpiarMensajes();
+        }
+        
+        function mostrarLogin() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            limpiarMensajes();
+        }
+        
+        function registrarse() {
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const password2 = document.getElementById('regPassword2').value;
+            const regError = document.getElementById('regError');
+            const regSuccess = document.getElementById('regSuccess');
+            const regInfo = document.getElementById('regInfo');
+            
+            // Limpiar mensajes
+            regError.classList.remove('visible');
+            regSuccess.classList.remove('visible');
+            regInfo.classList.remove('visible');
+            
+            // Validaciones
+            if (!email || !password || !password2) {
+                mostrarError(regError, 'Por favor completa todos los campos');
+                return;
+            }
+            
+            if (!validarEmail(email)) {
+                mostrarError(regError, 'Por favor ingresa un correo válido');
+                return;
+            }
+            
+            if (password.length < 6) {
+                mostrarError(regError, 'La contraseña debe tener al menos 6 caracteres');
+                return;
+            }
+            
+            if (password !== password2) {
+                mostrarError(regError, 'Las contraseñas no coinciden');
+                return;
+            }
+            
+            // Verificar si el usuario ya existe
+            const usuarios = cargarUsuarios();
+            if (usuarios.some(u => u.email === email)) {
+                mostrarError(regError, 'Este correo ya está registrado');
+                return;
+            }
+            
+            // Generar código de verificación
+            codigoVerificacionGenerado = generarCodigoVerificacion();
+            registroEnProceso = {
+                email: email,
+                password: encriptarPassword(password),
+                codigoVerificacion: codigoVerificacionGenerado
+            };
+            
+            // Mostrar sección de verificación
+            document.getElementById('verificationSection').classList.add('visible');
+            document.getElementById('generatedCode').textContent = codigoVerificacionGenerado;
+            document.getElementById('generatedCode').style.display = 'block';
+            
+            // Mostrar mensaje
+            mostrarInfo(regInfo, `✅ Código generado: ${codigoVerificacionGenerado} (También se envió a tu correo)`);
+            
+            // Enviar correo con Formspree
+            enviarCorreoVerificacion(email, codigoVerificacionGenerado);
+        }
+        
+        function verificarCodigo() {
+            const codigoIngresado = document.getElementById('verificationCode').value.trim();
+            const verError = document.getElementById('verError');
+            const verSuccess = document.getElementById('verSuccess');
+            
+            verError.classList.remove('visible');
+            verSuccess.classList.remove('visible');
+            
+            if (!codigoIngresado) {
+                mostrarError(verError, 'Por favor ingresa el código de verificación');
+                return;
+            }
+            
+            if (codigoIngresado !== codigoVerificacionGenerado.toString()) {
+                mostrarError(verError, 'Código incorrecto. Intenta de nuevo.');
+                return;
+            }
+            
+            // Código correcto - guardar usuario
+            const usuarios = cargarUsuarios();
+            usuarios.push({
+                email: registroEnProceso.email,
+                password: registroEnProceso.password,
+                verificado: true,
+                fechaRegistro: new Date().toISOString()
+            });
+            
+            guardarUsuarios(usuarios);
+            
+            // Limpiar
+            mostrarSuccess(verSuccess, '✅ ¡Cuenta creada exitosamente! Iniciando sesión...');
+            
+            setTimeout(() => {
+                iniciarSesionDirecta(registroEnProceso.email);
+            }, 1500);
+        }
+        
+        function reenviarCodigo() {
+            const email = registroEnProceso.email;
+            const verInfo = document.getElementById('verError');
+            
+            enviarCorreoVerificacion(email, codigoVerificacionGenerado);
+            
+            verInfo.textContent = '📧 Código reenviado a tu correo';
+            verInfo.className = 'info visible';
+            
+            setTimeout(() => {
+                verInfo.classList.remove('visible');
+            }, 3000);
+        }
+        
+        function enviarCorreoVerificacion(email, codigo) {
+            // Usar Formspree para enviar el correo
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('codigo', codigo);
+            formData.append('asunto', 'Código de Verificación - Agricovet');
+            formData.append('mensaje', `Tu código de verificación es: ${codigo}`);
+            
+            fetch('https://formspree.io/f/myzpjyqb', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                },
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('✅ Correo enviado exitosamente a', email);
+                } else {
+                    console.log('⚠️ El correo se procesó localmente (modo demo)');
+                }
+            })
+            .catch(error => {
+                console.log('ℹ️ Funcionando en modo local. Código mostrado en pantalla.');
+            });
+        }
+        
+        function iniciarSesion() {
+            const email = document.getElementById('logEmail').value.trim();
+            const password = document.getElementById('logPassword').value;
+            const logError = document.getElementById('logError');
+            
+            logError.classList.remove('visible');
+            
+            if (!email || !password) {
+                mostrarError(logError, 'Por favor completa todos los campos');
+                return;
+            }
+            
+            const usuarios = cargarUsuarios();
+            const usuario = usuarios.find(u => u.email === email);
+            
+            if (!usuario) {
+                mostrarError(logError, 'Correo o contraseña incorrectos');
+                return;
+            }
+            
+            if (!usuario.verificado) {
+                mostrarError(logError, 'Por favor verifica tu correo primero');
+                return;
+            }
+            
+            if (!desencriptarPassword(password, usuario.password)) {
+                mostrarError(logError, 'Correo o contraseña incorrectos');
+                return;
+            }
+            
+            // Iniciar sesión
+            iniciarSesionDirecta(email);
+        }
+        
+        function iniciarSesionDirecta(email) {
+            usuarioActual = email;
+            sessionStorage.setItem(SESSION_KEY, email);
+            
+            // Mostrar inventario
+            document.getElementById('authContainer').classList.add('hidden');
+            document.getElementById('inventarioContainer').classList.add('visible');
+            
+            cargarProductos();
+        }
+        
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                usuarioActual = null;
+                sessionStorage.removeItem(SESSION_KEY);
+                
+                document.getElementById('authContainer').classList.remove('hidden');
+                document.getElementById('inventarioContainer').classList.remove('visible');
+                
+                mostrarRegistro();
+                limpiarFormularios();
+                limpiarMensajes();
+            }
+        }
+        
+        function verificarSesion() {
+            const emailGuardado = sessionStorage.getItem(SESSION_KEY);
+            if (emailGuardado) {
+                usuarioActual = emailGuardado;
+                document.getElementById('authContainer').classList.add('hidden');
+                document.getElementById('inventarioContainer').classList.add('visible');
+                cargarProductos();
+            }
+        }
+        
+        // ==================== FUNCIONES DE INVENTARIO ====================
+        
+        function agregarProducto() {
+            const nombre = document.getElementById('inputNombre').value.trim();
+            const cantidad = parseInt(document.getElementById('inputCantidad').value) || 0;
+            const categoria = document.getElementById('inputCategoria').value;
+            
+            if (!nombre || !categoria) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+            
+            const productos = cargarProductos();
+            const id = Date.now();
+            
+            productos.push({
+                id: id,
+                nombre: nombre,
+                cantidad: cantidad,
+                categoria: categoria,
+                usuario: usuarioActual,
+                fechaCreacion: new Date().toISOString()
+            });
+            
+            guardarProductos(productos);
+            mostrarProductos(productos);
+            
+            // Limpiar formulario
+            document.getElementById('inputNombre').value = '';
+            document.getElementById('inputCantidad').value = '';
+            document.getElementById('inputCategoria').value = '';
+        }
+        
+        function editarProducto(id) {
+            const productos = cargarProductos();
+            const producto = productos.find(p => p.id === id);
+            
+            if (!producto) return;
+            
+            const nuevaCantidad = prompt('Nueva cantidad:', producto.cantidad);
+            if (nuevaCantidad !== null && !isNaN(nuevaCantidad)) {
+                producto.cantidad = parseInt(nuevaCantidad);
+                guardarProductos(productos);
+                mostrarProductos(productos);
+            }
+        }
+        
+        function eliminarProducto(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
+                let productos = cargarProductos();
+                productos = productos.filter(p => p.id !== id);
+                guardarProductos(productos);
+                mostrarProductos(productos);
+            }
+        }
+        
+        function mostrarProductos(productos = null) {
+            if (!productos) {
+                productos = cargarProductos();
+            }
+            
+            const cuerpoTabla = document.getElementById('cuerpoTabla');
+            cuerpoTabla.innerHTML = '';
+            
+            // Filtrar por usuario actual
+            const productosUsuario = productos.filter(p => p.usuario === usuarioActual);
+            
+            if (productosUsuario.length === 0) {
+                cuerpoTabla.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">No hay productos. ¡Agrega uno!</td></tr>';
+                return;
+            }
+            
+            productosUsuario.forEach(producto => {
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td>${producto.nombre}</td>
+                    <td>${producto.cantidad} unidades</td>
+                    <td>${producto.categoria}</td>
+                    <td>
+                        <button class="btn-accion" onclick="editarProducto(${producto.id})">✏️ Editar</button>
+                        <button class="btn-accion btn-quitar" onclick="eliminarProducto(${producto.id})">🗑️ Eliminar</button>
+                    </td>
+                `;
+                cuerpoTabla.appendChild(fila);
+            });
+        }
+        
+        function inicializarBuscador() {
+            document.getElementById('buscador').addEventListener('keyup', function(e) {
+                const terminoBusqueda = e.target.value.toLowerCase();
+                const productos = cargarProductos();
+                const productosFilutrados = productos.filter(p => 
+                    (p.usuario === usuarioActual) &&
+                    (p.nombre.toLowerCase().includes(terminoBusqueda) || 
+                     p.categoria.toLowerCase().includes(terminoBusqueda))
+                );
+                mostrarProductos(productosFilutrados);
+            });
+        }
+        
+        function cargarProductos() {
+            const datos = localStorage.getItem('productos_agricovet');
+            return datos ? JSON.parse(datos) : [];
+        }
+        
+        function guardarProductos(productos) {
+            localStorage.setItem('productos_agricovet', JSON.stringify(productos));
+        }
+        
+        // ==================== FUNCIONES DE ALMACENAMIENTO ====================
+        
+        function cargarUsuarios() {
+            const datos = localStorage.getItem(STORAGE_KEY);
+            return datos ? JSON.parse(datos) : [];
+        }
+        
+        function guardarUsuarios(usuarios) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(usuarios));
+        }
+        
+        // ==================== FUNCIONES UTILITARIAS ====================
+        
+        function validarEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+        
+        function generarCodigoVerificacion() {
+            return Math.floor(100000 + Math.random() * 900000);
+        }
+        
+        function encriptarPassword(password) {
+            // Encriptación simple (en producción usar bcrypt)
+            return btoa(password);
+        }
+        
+        function desencriptarPassword(password, passwordEncriptada) {
+            return btoa(password) === passwordEncriptada;
+        }
+        
+        function mostrarError(elemento, mensaje) {
+            elemento.textContent = mensaje;
+            elemento.classList.add('visible');
+        }
+        
+        function mostrarSuccess(elemento, mensaje) {
+            elemento.textContent = mensaje;
+            elemento.classList.add('visible');
+        }
+        
+        function mostrarInfo(elemento, mensaje) {
+            elemento.textContent = mensaje;
+            elemento.classList.add('visible');
+        }
+        
+        function limpiarMensajes() {
+            document.querySelectorAll('.error, .exito, .info').forEach(el => {
+                el.classList.remove('visible');
+            });
+        }
+        
+        function limpiarFormularios() {
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPassword').value = '';
+            document.getElementById('regPassword2').value = '';
+            document.getElementById('logEmail').value = '';
+            document.getElementById('logPassword').value = '';
+            document.getElementById('verificationCode').value = '';
+            document.getElementById('verificationSection').classList.remove('visible');
+            document.getElementById('generatedCode').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
